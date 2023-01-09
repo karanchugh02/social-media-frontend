@@ -1,13 +1,61 @@
-import React from "react";
+import React, { useRef } from "react";
+import { useS3Upload } from "next-s3-upload";
+import { useState } from "react";
+import {
+  createToast,
+  TopBarProgress,
+  updateSuccessToast,
+} from "../../utils/notification";
+import { useRouter } from "next/router";
 
 function Navbar() {
+  let imageUrls: string[] = [];
+  let { uploadToS3 } = useS3Upload();
+  const inputRef = useRef(null);
+  const [showTopLoader, setShowTopLoader] = useState(false);
+  const router = useRouter();
+
+  const handleClick = () => {
+    // 👇️ open file input box on click of other element
+    //@ts-ignore
+    inputRef.current.click();
+  };
+
+  const handleFilesChange = async (target: any) => {
+    let uploadToast = createToast("Uploading Files!!!!");
+    setShowTopLoader(true);
+    console.log("target is ", target);
+    const files = Array.from(target.target.files);
+    console.log("files are ", files);
+    for (let index = 0; index < files.length; index++) {
+      const file: any = files[index];
+      const { url } = await uploadToS3(file);
+      console.log("url from s3 is ", url);
+      imageUrls.push(url);
+    }
+    localStorage.setItem("images", JSON.stringify(imageUrls));
+    console.log("image urls are ", imageUrls);
+    updateSuccessToast(uploadToast, "File Uploaded Successfully!!!");
+    setShowTopLoader(false);
+    router.push("/post");
+    return;
+  };
   return (
     <div className="bg-black flex flex-row justify-between px-4 items-center py-3 fixed top-0 w-screen">
       <div className="left">
         <span className="text-white">VrooConnect</span>
       </div>
+
       <div className="right flex flex-row justify-around items-center space-x-3">
-        <button className="text-white">
+        <input
+          type="file"
+          name="file"
+          ref={inputRef}
+          multiple={true}
+          className="hidden"
+          onChange={handleFilesChange}
+        />
+        <button className="text-white" onClick={handleClick}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -40,6 +88,7 @@ function Navbar() {
           </svg>
         </button>
       </div>
+      {showTopLoader && <TopBarProgress />}
     </div>
   );
 }
