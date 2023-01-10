@@ -14,11 +14,13 @@ function MainComponent() {
       router.replace("/api/auth/signin");
     },
   });
+
   return (
     <div className="bg-black h-screen">
       <Navbar />
       <Stories />
       <Feed />
+
       <Footer />
     </div>
   );

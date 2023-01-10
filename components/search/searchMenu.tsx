@@ -1,10 +1,18 @@
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Api } from "../../utils/api";
 
-function SearchMenu() {
+function SearchMenu({
+  setSearchTerm,
+  searchTerm,
+}: {
+  setSearchTerm: Function;
+  searchTerm: string;
+}) {
   const router = useRouter();
+
   return (
-    <div className="bg-black border-b-[1px] border-gray-700 px-5 py-2 flex flex-row items-center justify-between z-10 mb-11">
+    <div className="bg-black border-b-[1px] border-gray-700 px-5 py-2 flex flex-row items-center justify-between z-10">
       <div className="relative w-[90%]">
         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
           <svg
@@ -26,6 +34,8 @@ function SearchMenu() {
         <input
           type="search"
           id="search"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
           className="block w-full p-1 pl-10 text-sm text-white border border-gray-300 rounded-md bg-black focus:ring-white focus:border-white focus:outline-none"
           placeholder="Search"
           required

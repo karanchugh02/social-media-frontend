@@ -1,7 +1,58 @@
 import React, { useState } from "react";
+import { Carousel } from "react-responsive-carousel";
+import { Api } from "../../utils/api";
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 
-function Post() {
-  const [isSaved, setIsSaved] = useState(true);
+type props = {
+  userId: string;
+  username: string;
+  userImage: string;
+  postImages: string[];
+  likes: number;
+  saved: boolean;
+  caption: string;
+  time: string;
+  liked: boolean;
+  postId: string;
+};
+
+function Post(props: props) {
+  const [liked, setLiked] = useState(props.liked);
+  const [saved, setSaved] = useState(props.saved);
+  const [likes, setLikes] = useState(props.likes);
+
+  const likeHandler = async () => {
+    if (liked == false) {
+      let response = await Api.get(`/feed/like-post/${props.postId}`);
+      if (response.status == true) {
+        setLikes(likes + 1);
+        setLiked(true);
+      }
+    } else {
+      let response = await Api.get(`/feed/unlike-post/${props.postId}`);
+      if (response.status == true) {
+        setLikes(likes - 1);
+        setLiked(false);
+      }
+    }
+    return;
+  };
+
+  const saveHandler = async () => {
+    if (saved == false) {
+      let response = await Api.get(`/feed/save-post/${props.postId}`);
+      if (response.status == true) {
+        setSaved(true);
+      }
+    } else {
+      let response = await Api.get(`/feed/unsave-post/${props.postId}`);
+      if (response.status == true) {
+        setSaved(false);
+      }
+    }
+    return;
+  };
+
   const [captionOpened, setCaptionOpened] = useState(false);
   return (
     <div className="bg-black py-2">
@@ -9,12 +60,13 @@ function Post() {
         <div className="leftU flex flex-row justify-around items-center space-x-2">
           <div className="image-con">
             <img
-              src="https://avatars.dicebear.com/api/open-peeps/your-custom-seed.svg"
+              src={props.userImage}
+              loading={"lazy"}
               className="h-12 w-12 rounded-full "
             />
           </div>
           <div>
-            <span>karanchugh02</span>
+            <span>{props.username}</span>
           </div>
         </div>
         <div className="rightU">
@@ -36,25 +88,46 @@ function Post() {
           </button>
         </div>
       </div>
-      <div className="image border-b-[1px] my-2 border-gray-700">
-        <img
-          src="https://instagram.fixc1-4.fna.fbcdn.net/v/t39.30808-6/323702964_598958612062469_1929000613867953071_n.jpg?stp=dst-jpg_e15&_nc_ht=instagram.fixc1-4.fna.fbcdn.net&_nc_cat=1&_nc_ohc=TfyTTGzQwn8AX9sTf_R&tn=ME8fnVh4PfHS3B5M&edm=AJ9x6zYAAAAA&ccb=7-5&ig_cache_key=MzAwOTIwMTk2MzY3NDQ0NDY3Mw%3D%3D.2-ccb7-5&oh=00_AfCp306W1phRosPMCLHIAm1zgYnYHEzekyPEyvFl6Oo4hQ&oe=63C071E3&_nc_sid=cff2a4"
-          alt=""
-        />
+      <div className="image border-b-[1px] z-0 my-2 border-gray-700">
+        <Carousel
+          className="z-0"
+          showArrows={false}
+          dynamicHeight={true}
+          showThumbs={false}
+          useKeyboardArrows={true}
+        >
+          {props.postImages.map((image, index) => {
+            return <img key={index} src={image} alt="" />;
+          })}
+        </Carousel>
       </div>
       <div className="bottom flex flex-col space-y-1">
         <div className="functions flex px-4 py-2 justify-between">
           <div className="fleft flex space-x-3">
-            <button className="text-green-600">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="w-6 h-6"
-              >
-                <path d="M7.493 18.75c-.425 0-.82-.236-.975-.632A7.48 7.48 0 016 15.375c0-1.75.599-3.358 1.602-4.634.151-.192.373-.309.6-.397.473-.183.89-.514 1.212-.924a9.042 9.042 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75 2.25 2.25 0 012.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H14.23c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23h-.777zM2.331 10.977a11.969 11.969 0 00-.831 4.398 12 12 0 00.52 3.507c.26.85 1.084 1.368 1.973 1.368H4.9c.445 0 .72-.498.523-.898a8.963 8.963 0 01-.924-3.977c0-1.708.476-3.305 1.302-4.666.245-.403-.028-.959-.5-.959H4.25c-.832 0-1.612.453-1.918 1.227z" />
-              </svg>
-            </button>
+            {liked ? (
+              <button onClick={likeHandler} className="text-green-600">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path d="M7.493 18.75c-.425 0-.82-.236-.975-.632A7.48 7.48 0 016 15.375c0-1.75.599-3.358 1.602-4.634.151-.192.373-.309.6-.397.473-.183.89-.514 1.212-.924a9.042 9.042 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75 2.25 2.25 0 012.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H14.23c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23h-.777zM2.331 10.977a11.969 11.969 0 00-.831 4.398 12 12 0 00.52 3.507c.26.85 1.084 1.368 1.973 1.368H4.9c.445 0 .72-.498.523-.898a8.963 8.963 0 01-.924-3.977c0-1.708.476-3.305 1.302-4.666.245-.403-.028-.959-.5-.959H4.25c-.832 0-1.612.453-1.918 1.227z" />
+                </svg>
+              </button>
+            ) : (
+              <button onClick={likeHandler} className="text-white">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path d="M7.493 18.75c-.425 0-.82-.236-.975-.632A7.48 7.48 0 016 15.375c0-1.75.599-3.358 1.602-4.634.151-.192.373-.309.6-.397.473-.183.89-.514 1.212-.924a9.042 9.042 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75 2.25 2.25 0 012.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H14.23c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23h-.777zM2.331 10.977a11.969 11.969 0 00-.831 4.398 12 12 0 00.52 3.507c.26.85 1.084 1.368 1.973 1.368H4.9c.445 0 .72-.498.523-.898a8.963 8.963 0 01-.924-3.977c0-1.708.476-3.305 1.302-4.666.245-.403-.028-.959-.5-.959H4.25c-.832 0-1.612.453-1.918 1.227z" />
+                </svg>
+              </button>
+            )}
+
             <button>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -85,8 +158,8 @@ function Post() {
             </button>
           </div>
           <div className="fright">
-            {isSaved == false ? (
-              <button>
+            {saved == false ? (
+              <button onClick={saveHandler}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -103,7 +176,7 @@ function Post() {
                 </svg>
               </button>
             ) : (
-              <button>
+              <button onClick={saveHandler}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -120,7 +193,7 @@ function Post() {
             )}
           </div>
         </div>
-        <div className="count px-4">200 likes</div>
+        <div className="count px-4">{likes} likes</div>
         <div
           onClick={() => {
             setCaptionOpened(!captionOpened);
@@ -129,10 +202,9 @@ function Post() {
             captionOpened == false ? "truncate" : ""
           }`}
         >
-          <b>karanchugh02</b> &nbsp; hello world hello world hello world hello
-          world hello world hello world hello world
+          <b>{props.username}</b> &nbsp; {props.caption}
         </div>
-        <div className="text-gray-500 text-sm px-4">4 minutes ago</div>
+        <div className="text-gray-500 text-sm px-4">{props.time}</div>
       </div>
     </div>
   );

@@ -51,11 +51,13 @@ model User {
     email         String?   @unique
     emailVerified DateTime?
     image         String?   @default("https://avatars.dicebear.com/api/open-peeps/imggggg.svg")
-    accounts      Account[]
-    sessions      Session[]
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    accounts Account[]
+    sessions Session[]
+
+    isOnboardingDone Boolean  @default(false)
+    createdAt        DateTime @default(now())
+    updatedAt        DateTime @updatedAt
 
     @@map("users")
 }

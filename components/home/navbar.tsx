@@ -41,7 +41,7 @@ function Navbar() {
     return;
   };
   return (
-    <div className="bg-black flex flex-row justify-between px-4 items-center py-3 fixed top-0 w-screen">
+    <div className="bg-black z-10 flex flex-row justify-between px-4 items-center py-3 fixed top-0 w-screen">
       <div className="left">
         <span className="text-white">VrooConnect</span>
       </div>
