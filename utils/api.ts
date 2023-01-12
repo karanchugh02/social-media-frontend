@@ -40,7 +40,9 @@ export class Api {
         method: "post",
         headers: {
           "auth-token": token,
+          "Content-type": "application/json",
         },
+        body: JSON.stringify(data),
       });
 
       let finalData = await response.json();
