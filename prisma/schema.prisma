@@ -52,6 +52,8 @@ model User {
     emailVerified DateTime?
     image         String?   @default("https://avatars.dicebear.com/api/open-peeps/imggggg.svg")
 
+    savedPosts String[] @default([]) @db.ObjectId
+
     accounts Account[]
     sessions Session[]
 

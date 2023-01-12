@@ -1,9 +1,11 @@
+import { useRouter } from "next/router";
 import React from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 
 function Posts(props: { posts: any; loading: boolean }) {
   console.log("props are ", props);
+  const router = useRouter();
   return (
     <>
       {props.loading ? (
@@ -64,6 +66,9 @@ function Posts(props: { posts: any; loading: boolean }) {
           {props.posts.map((post: any) => {
             return (
               <Carousel
+                onClickItem={() => {
+                  router.push(`/p/${post.postId}`);
+                }}
                 key={post._id}
                 showArrows={false}
                 showThumbs={false}

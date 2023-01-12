@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import { Api } from "../../utils/api";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import Link from "next/link";
+import moment from "moment";
 
 type props = {
   userId: string;
@@ -20,6 +22,29 @@ function Post(props: props) {
   const [liked, setLiked] = useState(props.liked);
   const [saved, setSaved] = useState(props.saved);
   const [likes, setLikes] = useState(props.likes);
+  const [postTime, setPostTime] = useState(props.time);
+  const [captionOpened, setCaptionOpened] = useState(false);
+
+  console.log("post props are ", props);
+
+  const timeHandler = () => {
+    let postData = moment(props.time);
+    let dayDiff = moment().diff(postData, "days");
+    let result = dayDiff + " days ago.";
+
+    if (dayDiff == 1) {
+      result = dayDiff + " day ago.";
+    }
+    if (dayDiff == 0) {
+      result = moment().diff(postData, "hours") + " hours ago.";
+    }
+    if (dayDiff > 30) {
+      result = moment().diff(postData, "months") + " months ago.";
+    }
+
+    setPostTime(result);
+    return;
+  };
 
   const likeHandler = async () => {
     if (liked == false) {
@@ -53,20 +78,27 @@ function Post(props: props) {
     return;
   };
 
-  const [captionOpened, setCaptionOpened] = useState(false);
+  useEffect(() => {
+    timeHandler();
+  }, []);
+
   return (
     <div className="bg-black py-2">
       <div className="upper flex justify-between items-center px-4 py-2">
         <div className="leftU flex flex-row justify-around items-center space-x-2">
           <div className="image-con">
-            <img
-              src={props.userImage}
-              loading={"lazy"}
-              className="h-12 w-12 rounded-full "
-            />
+            <Link href={`/${props.username}`}>
+              <img
+                src={props.userImage}
+                loading={"lazy"}
+                className="h-12 w-12 rounded-full "
+              />
+            </Link>
           </div>
           <div>
-            <span>{props.username}</span>
+            <Link href={`/${props.username}`}>
+              <span>{props.username}</span>
+            </Link>
           </div>
         </div>
         <div className="rightU">
@@ -202,9 +234,12 @@ function Post(props: props) {
             captionOpened == false ? "truncate" : ""
           }`}
         >
-          <b>{props.username}</b> &nbsp; {props.caption}
+          <b>
+            <Link href={`/${props.username}`}>{props.username}</Link>
+          </b>
+          &nbsp; {props.caption}
         </div>
-        <div className="text-gray-500 text-sm px-4">{props.time}</div>
+        <div className="text-gray-500 text-sm px-4">{postTime}</div>
       </div>
     </div>
   );
