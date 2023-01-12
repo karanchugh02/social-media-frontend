@@ -122,6 +122,8 @@ function Post(props: props) {
       </div>
       <div className="image border-b-[1px] z-0 my-2 border-gray-700">
         <Carousel
+          preventMovementUntilSwipeScrollTolerance={true}
+          swipeScrollTolerance={50}
           className="z-0"
           showArrows={false}
           dynamicHeight={true}

@@ -37,7 +37,11 @@ function ImageView({}: Props) {
       </div>
 
       <div className="imageSlider">
-        <Carousel dynamicHeight={true}>
+        <Carousel
+          dynamicHeight={true}
+          showThumbs={false}
+          useKeyboardArrows={true}
+        >
           {images.map((image, index) => {
             return (
               <div key={index}>
