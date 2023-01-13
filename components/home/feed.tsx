@@ -29,6 +29,7 @@ function Feed() {
         posts.map((post: any) => {
           return (
             <Post
+              stringPostId={post.stringPostId}
               postId={post._id}
               liked={post.isLiked}
               caption={post.caption}

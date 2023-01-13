@@ -18,6 +18,7 @@ function PostMainComponent() {
     userId: "",
     username: "",
     userImage: "",
+    stringPostId: "",
   });
 
   const [postDataReady, setPostDataReady] = useState(false);
@@ -38,6 +39,7 @@ function PostMainComponent() {
         userId: response.data.createdUserData._id,
         userImage: response.data.createdUserData.image,
         username: response.data.createdUserData.username,
+        stringPostId: response.data.stringPostId,
       });
       setPostDataReady(true);
     }
@@ -84,6 +86,7 @@ function PostMainComponent() {
         <div className="pb-14 bg-black">
           <Post
             key={"post"}
+            stringPostId={postData.stringPostId}
             caption={postData.caption}
             liked={postData.liked}
             likes={postData.likes}
