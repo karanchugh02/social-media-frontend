@@ -230,7 +230,9 @@ function Post(props: props) {
             )}
           </div>
         </div>
-        <div className="count px-4">{likes} likes</div>
+        <Link href={`/p/${props.stringPostId}/likes`}>
+          <div className="count px-4">{likes} likes</div>
+        </Link>
         <div
           onClick={() => {
             setCaptionOpened(!captionOpened);

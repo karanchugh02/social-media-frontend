@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import React from "react";
 
-function ProfileHeader() {
+function Header({ title }: { title: string }) {
   const router = useRouter();
   return (
     <div className="header flex flex-row justify-between font-bold py-2 border-b-[1px] border-gray-700 bg-black px-4">
@@ -26,11 +26,11 @@ function ProfileHeader() {
         </button>
       </div>
       <div>
-        <span>{router.query.username}</span>
+        <span>{title}</span>
       </div>
       <div></div>
     </div>
   );
 }
 
-export default ProfileHeader;
+export default Header;

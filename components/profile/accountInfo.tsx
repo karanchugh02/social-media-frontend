@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 type Props = {
@@ -76,16 +77,20 @@ function AccountInfo(props: Props) {
           <br></br>
           <span className="text-gray-400 text-sm">posts</span>
         </div>
-        <div>
-          <span className="font-semibold">{props.followers}</span>
-          <br></br>
-          <span className="text-gray-400 text-sm">followers</span>
-        </div>
-        <div>
-          <span className="font-semibold">{props.following}</span>
-          <br></br>
-          <span className="text-gray-400 text-sm">following</span>
-        </div>
+        <Link href={`/${props.username}/followers`}>
+          <div>
+            <span className="font-semibold">{props.followers}</span>
+            <br></br>
+            <span className="text-gray-400 text-sm">followers</span>
+          </div>
+        </Link>
+        <Link href={`/${props.username}/following`}>
+          <div>
+            <span className="font-semibold">{props.following}</span>
+            <br></br>
+            <span className="text-gray-400 text-sm">following</span>
+          </div>
+        </Link>
       </div>
     </>
   );
